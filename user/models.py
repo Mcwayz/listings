@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+# Custom manager for handling user creation and other user-specific methods.
 class UserManager(BaseUserManager):
+
+    # Method for creating regular users.
     def create_user(self, email, name, password=None):
         if not email:
             raise ValueError('Users must have an email address')
@@ -11,15 +14,16 @@ class UserManager(BaseUserManager):
         user = self.model(email=email, name=name)
         user.set_password(password)
         user.save(using=self._db)
-
         return user
 
+    # Method for creating a user with realtor privileges.
     def create_realtor(self, email, name, password=None):
         user = self.create_user(email, name, password)
         user.is_realtor = True
         user.save(using=self._db)
         return user
 
+    # Method for creating a superuser (admin).
     def create_superuser(self, email, name, password=None):
         user = self.create_user(email, name, password)
         user.is_superuser = True
@@ -27,6 +31,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+# My Custom user model.
 
 class UserAccount(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
