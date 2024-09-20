@@ -99,6 +99,7 @@ DATABASES = {
 
 DATABASE_ROUTERS = [
     'user.router.AuthRouter',
+    'listing.router.ListingRouter',
 ]
 
 
