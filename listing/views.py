@@ -18,7 +18,7 @@ class ManageListingView(APIView):
         try:
             user = request.user
             if not user.is_realtor:
-                return Response({'Error': 'User Does Not Have Permission To Create Listing(s)'}, status=status.HTTP_403_FORBIDDEN)
+                return Response({'Error': 'User Does Not Have Permission To Create Listings '}, status=status.HTTP_403_FORBIDDEN)
             data = request.data
 
             slug = data['slug']
@@ -95,5 +95,5 @@ class ManageListingView(APIView):
             return Response({'Success', 'Listing Created'}, status=status.HTTP_201_CREATED)
         except:
             return Response(
-                {'Error': 'Something Went Wrong Reading Listings'},status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {'Error': 'Something Went Wrong Creating Listings'},status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
