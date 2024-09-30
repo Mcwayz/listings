@@ -14,7 +14,7 @@ class ManageListingView(APIView):
 
         pass
 
-    def post(self, ):
+    def post(self, request):
         try:
             user = request.user
             if not user.is_realtor:

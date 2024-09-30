@@ -4,5 +4,5 @@ from .views import ManageListingView
 
 
 urlpatterns = [
-    path('', ManageListingView.as_view()),
+    path('manage', ManageListingView.as_view()),
 ]
