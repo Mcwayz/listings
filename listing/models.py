@@ -27,7 +27,6 @@ class Listing(models.Model):
     price = models.IntegerField()  # Price of the property.
     bedrooms = models.IntegerField()  # Number of bedrooms in the property.
     bathrooms = models.DecimalField(max_digits=2, decimal_places=1)  # Number of bathrooms, allowing one decimal place.
-
     # Field to select sale type, either 'For Sale' or 'For Rent'. Default is 'For Sale'.
     sale_type = models.CharField(max_length=100, choices=SaleType.choices, default=SaleType.FOR_SALE)
 
