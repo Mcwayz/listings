@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .serializers import ListingSerializer
 
 from listing.models import Listing
 
@@ -11,8 +12,26 @@ from listing.models import Listing
 
 class ManageListingView(APIView):
     def get(self, request, format=None):
-
-        pass
+        try:
+            user = request.user
+            if not user.is_realtor:
+                return Response({'Error': 'User Does Not Have Permission To Retrieve Listings '}, status=status.HTTP_403_FORBIDDEN)
+            slug = request.query_params.get('slug')
+            
+            if not slug:
+                listing = Listing.objects.order_by('-date_created').filter(realtor=user.email)
+                listing = ListingSerializer(listing, many=True)
+                return Response({'listings': listing.data}, status=status.HTTP_200_OK)
+            
+            if Listing.objects.filter(realtor=user.email, slug=slug).exists():
+                listing = Listing.objects.get(realtor=user.email,slug=slug)
+                listing = ListingSerializer(listing)
+                return Response({'listing': listing.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({'Error': 'Listing Does Not Exist'}, status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response({'Error': 'Something Went Wrong When Retrieving Listings.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 
     def post(self, request):
         try:
