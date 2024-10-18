@@ -116,3 +116,20 @@ class ManageListingView(APIView):
             return Response(
                 {'Error': 'Something Went Wrong Creating Listings'},status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class ListingDetailView(APIView):
+    def get(self, request, format=None):
+        try:
+            slug = request.query_params.get('slug')
+            if not slug:
+                return Response({'Error': 'Must Provide Slug'}, status=status.HTTP_400_BAD_REQUEST)
+            if Listing.objects.filter(slug=slug,is_published=True).exists():
+                listing = Listing.objects.get(slug=slug,is_published=True)
+                listing = ListingSerializer(listing)
+                return Response({'listing': listing.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({'Error': 'Listing With This Slug Does Not Exist'}, status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response({'Error': 'Something Went Wrong When Retrieving Listings.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
