@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 
-# Create your views here.
 
 class RegisterView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -17,7 +16,7 @@ class RegisterView(APIView):
             email = data['email'].lower()
             password = data['password']
             re_password = data['re_password']
-            is_realtor = data['is_realtor'] == 'True'  # Simplified boolean check
+            is_realtor = data['is_realtor'] == 'True' 
 
             # Password validation
             if password != re_password:
@@ -46,6 +45,8 @@ class RegisterView(APIView):
                 {'Error': f'Something went wrong when registering user: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+            
+            
 class RetrieveUserView(APIView):
     def get(self, request, format=None):
         try:
