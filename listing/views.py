@@ -1,6 +1,6 @@
 from django.http import request
 from django.shortcuts import render
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import ListingSerializer
@@ -130,6 +130,19 @@ class ListingDetailView(APIView):
                 return Response({'listing': listing.data}, status=status.HTTP_200_OK)
             else:
                 return Response({'Error': 'Listing With This Slug Does Not Exist'}, status=status.HTTP_404_NOT_FOUND)
+        except:
+            return Response({'Error': 'Something Went Wrong When Retrieving Listing Details.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+class ListingsView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    def get(self, request, format=None):
+        try:
+            if not Listing.objects.filter(is_published=True).exists():
+                return Response({'Error': 'No Published Listings Available'}, status=status.HTTP_404_NOT_FOUND)
+            listings = Listing.objects.order_by('-date_created').filter(is_published=True)
+            listings = ListingSerializer(listings, many=True)
+            return Response({'listings': listings.data}, status=status.HTTP_200_OK)
         except:
             return Response({'Error': 'Something Went Wrong When Retrieving Listings.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
