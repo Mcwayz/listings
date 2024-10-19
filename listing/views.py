@@ -288,3 +288,27 @@ class ListingsView(APIView):
         except:
             return Response({'Error': 'Something Went Wrong When Retrieving Listings.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+        
+class SearchListingsView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def get(self, request, format=None):
+        try:
+            search = request.query_params.get('search')
+            if not search:
+                return Response({'Error': 'Search query parameter is missing.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Case-insensitive search for better user experience
+            listings = Listing.objects.filter(title__icontains=search)
+
+            print('Listings Retrieved:')
+            for listing in listings:
+                print(listing.title)
+
+            return Response({'Success': 'Listings Retrieved Successfully'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            # Logging the specific exception for debugging purposes
+            print(f'Error occurred: {str(e)}')
+            return Response({'Error': 'Something Went Wrong When Searching For Listings.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        
