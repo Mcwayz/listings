@@ -243,7 +243,11 @@ class ManageListingView(APIView):
             if not user.is_realtor:
                 return Response({'Error': 'User Does Not Have Permission To Delete Listings '}, status=status.HTTP_403_FORBIDDEN)
             data = request.data
-            slug = data['slug']
+            try:
+                slug = data['slug']
+            except:
+                return Response({'Error': 'Slug Must Be Provided'}, status=status.HTTP_400_BAD_REQUEST)
+            
             if not Listing.objects.filter(realtor=user.email, slug=slug).exists():
                 return Response({'Error': 'Listing You Are Trying To Delete Does Not Exist'}, status=status.HTTP_404_NOT_FOUND)
             Listing.objects.filter(realtor=user.email, slug=slug).delete()
