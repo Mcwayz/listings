@@ -44,6 +44,15 @@ class Listing(models.Model):
 
     # Date when the listing was created, defaults to the current time.
     date_created = models.DateTimeField(default=now)
+    
+    
+    def delete(self):
+        self.main_photo.storage.delete(self.main_photo.name)
+        self.photo_1.storage.delete(self.photo_1.name)
+        self.photo_2.storage.delete(self.photo_2.name)
+        self.photo_3.storage.delete(self.photo_3.name)
+        
+        super().delete()
 
     # String representation of the listing model, returns the title of the listing.
     def __str__(self):
