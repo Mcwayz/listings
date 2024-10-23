@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ManageListingView, ListingDetailView, ListingsView, SearchListingsView
+from .views.views import ManageListingView, ListingDetailView, ListingsView, SearchListingsView
 
 
 urlpatterns = [

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import ListingSerializer
+from ..serializers.serializers import ListingSerializer
 
 from listing.models import Listing
 
@@ -297,17 +297,13 @@ class SearchListingsView(APIView):
             search = request.query_params.get('search')
             if not search:
                 return Response({'Error': 'Search query parameter is missing.'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Case-insensitive search for better user experience
             listings = Listing.objects.filter(title__icontains=search)
 
             print('Listings Retrieved:')
             for listing in listings:
                 print(listing.title)
-
             return Response({'Success': 'Listings Retrieved Successfully'}, status=status.HTTP_200_OK)
         except Exception as e:
-            # Logging the specific exception for debugging purposes
             print(f'Error occurred: {str(e)}')
             return Response({'Error': 'Something Went Wrong When Searching For Listings.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
